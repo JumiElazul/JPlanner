@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:JPlanner.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:JPlanner.Models"
+    xmlns:app="clr-namespace:JPlanner"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="MealPage"
     d:DataContext="{d:DesignInstance local:MealPage,
@@ -28,7 +29,7 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition MaxWidth="100" MinWidth="50"/>
+                <ColumnDefinition MaxWidth="100" MinWidth="50" />
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
@@ -48,7 +49,22 @@
                 </TextBlock>
             </Grid>
 
-            <TextBox Grid.Column="1" VerticalAlignment="Center"/>
+            <Grid Grid.Column="1" Margin="5 0 5 0">
+                <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="CaloriesTextBox" Width="Auto"/>
+                <TextBlock IsHitTestVisible="False" Text="Calories" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12" Foreground="LightGray">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=CaloriesTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
             <Button Grid.Column="2" Content="Submit" VerticalAlignment="Center"/>
 
         </Grid>
