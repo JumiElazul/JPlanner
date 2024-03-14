@@ -14,7 +14,7 @@ namespace JPlanner.ViewModels.Pages
     {
         private bool _isInitialized = false;
         [ObservableProperty] private ObservableCollection<Meal> _meals = new ObservableCollection<Meal>();
-        [ObservableProperty] private Meal _selectedMeal = null;
+        [ObservableProperty] private int _calculatedCalories = 1500;
 
         public void OnNavigatedTo()
         {
@@ -35,6 +35,15 @@ namespace JPlanner.ViewModels.Pages
             Meals.Add(new Meal("Turkey Sandwich", 500, DateTime.Now));
             Meals.Add(new Meal("Redbull", 110, DateTime.Now.AddHours(-1)));
             Meals.Add(new Meal("Fresh Slice best pizza in world", 800, DateTime.Now.AddHours(-5)));
+        }
+
+        [RelayCommand]
+        private void DeleteSelected(Meal meal)
+        {
+            if (meal != null)
+            {
+                Meals.Remove(meal);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace JPlanner.ViewModels.Pages
         private void InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
-            AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
+            AppVersion = $"JPlanner - {GetAssemblyVersion()}";
 
             _isInitialized = true;
         }

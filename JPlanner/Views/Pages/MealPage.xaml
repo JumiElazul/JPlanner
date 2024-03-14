@@ -24,62 +24,66 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition MaxWidth="100" MinWidth="50" />
+                <ColumnDefinition MaxWidth="150" MinWidth="120" />
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="MealTextBox" Width="Auto"/>
-                <TextBlock IsHitTestVisible="False" Text="Enter Meal Here" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12" Foreground="LightGray">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=MealTextBox}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Grid>
-
-            <Grid Grid.Column="1" Margin="5 0 5 0">
-                <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="CaloriesTextBox" Width="Auto"/>
-                <TextBlock IsHitTestVisible="False" Text="Calories" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="12" Foreground="LightGray">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=CaloriesTextBox}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Grid>
-
-            <Button Grid.Column="2" Content="Submit" VerticalAlignment="Center"/>
+            <ui:TextBox Grid.Column="0" PlaceholderText="Enter Meal" VerticalAlignment="Stretch"/>
+            <ui:TextBox Grid.Column="1" PlaceholderText="Enter Calories" Margin="4 0" VerticalAlignment="Stretch"/>
+            <ui:Button Grid.Column="2" Content="Submit" VerticalAlignment="Stretch" />
 
         </Grid>
 
-        <ListView Grid.Row="1" ItemsSource="{Binding ViewModel.Meals}" SelectedItem="{Binding ViewModel.SelectedMeal}">
+        <ListView Grid.Row="1" ItemsSource="{Binding ViewModel.Meals}" SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Food}"/>
-                        <TextBlock Text="{Binding Calories}"/>
-                        <TextBlock Text="{Binding TimeStamp}"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ui:Button Grid.Column="0" Margin="0,0,20,0" Width="25" Height="25" HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center" 
+                                   Command="{Binding Path=DataContext.ViewModel.DeleteSelectedCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                   CommandParameter="{Binding}">
+                            <ui:Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid>
+                                        <Ellipse x:Name="circle" Fill="IndianRed" Width="20" Height="20"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="circle" Property="Fill" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="circle" Property="Fill" Value="DarkRed"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ui:Button.Template>
+                        </ui:Button>
+                        <ui:TextBlock Margin="0,5,0,5" Text="{Binding Food}" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <ui:TextBlock Margin="0,5,0,5" Text="{Binding Calories}" Grid.Column="2"/>
+                        <ui:TextBlock Margin="0,5,0,5" Text="{Binding TimeStamp}" Grid.Column="3" HorizontalAlignment="Right"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        
+
+
+        <StackPanel Grid.Row="2"  Orientation="Horizontal" Margin="0 20">
+            <TextBlock FontSize="24" Text="Calories: " VerticalAlignment="Bottom"/>
+            <TextBlock FontSize="24" Text="{Binding ViewModel.CalculatedCalories}" VerticalAlignment="Bottom"/>
+        </StackPanel>
+
     </Grid>
 </Page>
