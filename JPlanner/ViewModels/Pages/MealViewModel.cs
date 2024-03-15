@@ -17,6 +17,8 @@ namespace JPlanner.ViewModels.Pages
         private bool _isInitialized = false;
         [ObservableProperty] private ObservableCollection<Meal> _meals = new ObservableCollection<Meal>();
         [ObservableProperty] private int _calculatedCalories;
+        [ObservableProperty] private string _mealInfo;
+        [ObservableProperty] private string _calorieInfo;
 
         public void OnNavigatedTo()
         {
@@ -57,6 +59,22 @@ namespace JPlanner.ViewModels.Pages
         private void CalculateTotalCalories()
         {
             CalculatedCalories = Meals.Sum(meal => meal.Calories);
+        }
+
+        [RelayCommand]
+        private void SubmitMeal()
+        {
+            if (!String.IsNullOrWhiteSpace(MealInfo) && !String.IsNullOrWhiteSpace(CalorieInfo))
+            {
+                bool converted = int.TryParse(CalorieInfo, out int calories);
+
+                if (converted)
+                {
+                    Meals.Add(new Meal(MealInfo, calories, DateTime.Now));
+                    MealInfo = String.Empty;
+                    CalorieInfo = String.Empty;
+                }
+            }
         }
     }
 }

@@ -12,6 +12,23 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+
+            <ControlTemplate x:Key="CircularButtonTemplate" TargetType="Button">
+                <Grid>
+                    <Ellipse x:Name="circle" Fill="IndianRed" Width="25" Height="25"/>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="circle" Property="Fill" Value="Red"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter TargetName="circle" Property="Fill" Value="DarkRed"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
         </ResourceDictionary>
+
+
     </Application.Resources>
 </Application>
