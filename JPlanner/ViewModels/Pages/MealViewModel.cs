@@ -5,6 +5,8 @@
 
 using JPlanner.Models;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Wpf.Ui.Controls;
 
@@ -14,7 +16,7 @@ namespace JPlanner.ViewModels.Pages
     {
         private bool _isInitialized = false;
         [ObservableProperty] private ObservableCollection<Meal> _meals = new ObservableCollection<Meal>();
-        [ObservableProperty] private int _calculatedCalories = 1500;
+        [ObservableProperty] private int _calculatedCalories;
 
         public void OnNavigatedTo()
         {
@@ -26,6 +28,7 @@ namespace JPlanner.ViewModels.Pages
 
         private void InitializeViewModel()
         {
+            Meals.CollectionChanged += OnMealsCollectionChanged;
             InitializeMeals();
             _isInitialized = true;
         }
@@ -44,6 +47,16 @@ namespace JPlanner.ViewModels.Pages
             {
                 Meals.Remove(meal);
             }
+        }
+
+        private void OnMealsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CalculateTotalCalories();
+        }
+
+        private void CalculateTotalCalories()
+        {
+            CalculatedCalories = Meals.Sum(meal => meal.Calories);
         }
     }
 }
