@@ -15,7 +15,7 @@ namespace JPlanner.ViewModels.Pages
     public partial class MealViewModel : ObservableObject, INavigationAware
     {
         private bool _isInitialized = false;
-        [ObservableProperty] private ObservableCollection<Meal> _meals = new ObservableCollection<Meal>();
+        [ObservableProperty] private ObservableCollection<MealEntry> _meals = new ObservableCollection<MealEntry>();
         [ObservableProperty] private int _calculatedCalories;
         [ObservableProperty] private string _mealInfo;
         [ObservableProperty] private string _calorieInfo;
@@ -37,13 +37,13 @@ namespace JPlanner.ViewModels.Pages
 
         private void InitializeMeals()
         {
-            Meals.Add(new Meal("Turkey Sandwich", 500, DateTime.Now));
-            Meals.Add(new Meal("Redbull", 110, DateTime.Now.AddHours(-1)));
-            Meals.Add(new Meal("Fresh Slice best pizza in world", 800, DateTime.Now.AddHours(-5)));
+            Meals.Add(new MealEntry("Turkey Sandwich", 500, DateTime.Now));
+            Meals.Add(new MealEntry("Redbull", 110, DateTime.Now.AddHours(-1)));
+            Meals.Add(new MealEntry("Fresh Slice best pizza in world", 800, DateTime.Now.AddHours(-5)));
         }
 
         [RelayCommand]
-        private void DeleteSelected(Meal meal)
+        private void DeleteSelected(MealEntry meal)
         {
             if (meal != null)
             {
@@ -70,7 +70,7 @@ namespace JPlanner.ViewModels.Pages
 
                 if (converted)
                 {
-                    Meals.Add(new Meal(MealInfo, calories, DateTime.Now));
+                    Meals.Add(new MealEntry(MealInfo, calories, DateTime.Now));
                     MealInfo = String.Empty;
                     CalorieInfo = String.Empty;
                 }

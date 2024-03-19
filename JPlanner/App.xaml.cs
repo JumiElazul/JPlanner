@@ -3,26 +3,38 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using JPlanner.Database;
 using JPlanner.Services;
 using JPlanner.ViewModels.Pages;
 using JPlanner.ViewModels.Windows;
 using JPlanner.Views.Pages;
 using JPlanner.Views.Windows;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using Wpf.Ui;
 
 namespace JPlanner
 {
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
+        [DllImport("Kernel32", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern void FreeConsole();
+
         // The.NET Generic Host provides dependency injection, configuration, logging, and other services.
         // https://docs.microsoft.com/dotnet/core/extensions/generic-host
         // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
@@ -77,6 +89,10 @@ namespace JPlanner
         /// </summary>
         private void OnStartup(object sender, StartupEventArgs e)
         {
+#if DEBUG
+            AllocConsole();
+#endif
+            SQLiteHandler.InitializeDatabase();
             _host.Start();
         }
 
@@ -87,7 +103,12 @@ namespace JPlanner
         {
             await _host.StopAsync();
 
+#if DEBUG
+            FreeConsole();
+#endif
+
             _host.Dispose();
+
         }
 
         /// <summary>

@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace JPlanner.Models
 {
-    public class Meal
+    public class MealEntry
     {
-        public string Food { get; private set; }
+        public string Entry { get; private set; }
         public int Calories { get; private set; }
         public DateTime TimeStamp { get; private set; }
 
-        public Meal(string food, int calories, DateTime timeStamp)
+        public MealEntry(string entry, int calories, DateTime timeStamp)
         {
-            Food = food;
+            Entry = entry;
             Calories = calories;
             TimeStamp = timeStamp;
         }
 
         public override string ToString()
         {
-            return $"{Food}, {Calories} calories at {TimeStamp.ToString("f")}";
+            return $"{Entry}, {Calories} calories at {TimeStamp.ToString()}";
         }
     }
 }
