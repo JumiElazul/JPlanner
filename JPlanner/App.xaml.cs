@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using JPlanner.Database;
+using JPlanner.Models;
 using JPlanner.Services;
 using JPlanner.ViewModels.Pages;
 using JPlanner.ViewModels.Windows;

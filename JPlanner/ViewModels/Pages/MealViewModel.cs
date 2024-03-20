@@ -3,6 +3,7 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using JPlanner.Database;
 using JPlanner.Models;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -31,15 +32,7 @@ namespace JPlanner.ViewModels.Pages
         private void InitializeViewModel()
         {
             Meals.CollectionChanged += OnMealsCollectionChanged;
-            InitializeMeals();
             _isInitialized = true;
-        }
-
-        private void InitializeMeals()
-        {
-            Meals.Add(new MealEntry("Turkey Sandwich", 500, DateTime.Now));
-            Meals.Add(new MealEntry("Redbull", 110, DateTime.Now.AddHours(-1)));
-            Meals.Add(new MealEntry("Fresh Slice best pizza in world", 800, DateTime.Now.AddHours(-5)));
         }
 
         [RelayCommand]
@@ -70,11 +63,20 @@ namespace JPlanner.ViewModels.Pages
 
                 if (converted)
                 {
-                    Meals.Add(new MealEntry(MealInfo, calories, DateTime.Now));
-                    MealInfo = String.Empty;
-                    CalorieInfo = String.Empty;
+                    MealEntry newMeal = new MealEntry(MealInfo, calories, DateTime.Now);
+                    Meals.Add(newMeal);
+                    SQLiteHandler.CreateUser("DefaultUser");
+                    SQLiteHandler.CreateMealForUser("DefaultUser", newMeal);
+
+                    ClearInputFields();
                 }
             }
+        }
+
+        private void ClearInputFields()
+        {
+            MealInfo = String.Empty;
+            CalorieInfo = String.Empty;
         }
     }
 }

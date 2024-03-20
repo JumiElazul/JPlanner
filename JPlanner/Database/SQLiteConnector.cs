@@ -89,5 +89,66 @@ namespace JPlanner.Database
                 throw new DbUserNotFoundException(username);
             }
         }
+
+        public static List<MealEntry> GetMealEntriesForUser(string username)
+        {
+            List<MealEntry> meals = new List<MealEntry>();
+            using SqliteConnection connection = OpenConnection();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                @"SELECT m.Entry, m.Calories, m.TimeStamp
+                  FROM Meals m
+                  JOIN Users u ON m.UserId = u.UserId
+                  WHERE u.Username = @Username;";
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string entry = reader.GetString(0);
+                int calories = reader.GetInt32(1);
+                string timeStamp = reader.GetString(2);
+
+                meals.Add(new MealEntry(entry, calories, DateTime.Parse(timeStamp)));
+            }
+
+            return meals;
+        }
+
+#if DEBUG
+        public static void PrintMealEntriesForUser(string username)
+        {
+            List<MealEntry> meals = new List<MealEntry>();
+            using SqliteConnection connection = OpenConnection();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                @"SELECT m.Entry, m.Calories, m.TimeStamp
+                  FROM Meals m
+                  JOIN Users u ON m.UserId = u.UserId
+                  WHERE u.Username = @Username;";
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string entry = reader.GetString(0);
+                int calories = reader.GetInt32(1);
+                string timeStamp = reader.GetString(2);
+
+                meals.Add(new MealEntry(entry, calories, DateTime.Parse(timeStamp)));
+            }
+
+            foreach (MealEntry entry in meals)
+            {
+                Console.WriteLine(entry);
+            }
+        }
+#endif
     }
 }
