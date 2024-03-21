@@ -94,6 +94,7 @@ namespace JPlanner
             AllocConsole();
 #endif
             SQLiteHandler.InitializeDatabase();
+            SQLiteHandler.CreateUser("DefaultUser");
             _host.Start();
         }
 

@@ -67,14 +67,10 @@ namespace JPlanner.Database
         public static void CreateMealForUser(string username, MealEntry mealEntry)
         {
             using SqliteConnection connection = OpenConnection();
-            using SqliteCommand getUserIdCommand = connection.CreateCommand();
-            getUserIdCommand.CommandText = "SELECT UserId FROM Users WHERE Username = @Username";
-            getUserIdCommand.Parameters.AddWithValue("@Username", username);
-            object userIdResult = getUserIdCommand.ExecuteScalar();
+            int userId = GetUserId(username);
 
-            if (userIdResult != null)
+            if (IsValidUserId(userId))
             {
-                int userId = Convert.ToInt32(userIdResult);
                 using SqliteCommand addMealCommand = connection.CreateCommand();
                 addMealCommand.CommandText = $"INSERT INTO Meals (UserId, Entry, Calories, TimeStamp) VALUES (@UserId, @Entry, @Calories, @TimeStamp);";
                 addMealCommand.Parameters.AddWithValue("@UserId", userId);
@@ -88,6 +84,50 @@ namespace JPlanner.Database
             {
                 throw new DbUserNotFoundException(username);
             }
+        }
+
+        public static void DeleteMealForUser(string username, MealEntry mealEntry)
+        {
+            using SqliteConnection connection = OpenConnection();
+            int userId = GetUserId(username);
+
+            if (IsValidUserId(userId))
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = @"
+                DELETE FROM Meals
+                WHERE UserId = @UserId
+                AND Entry = @Entry
+                AND Calories = @Calories
+                AND TimeStamp = @TimeStamp;";
+                command.Parameters.AddWithValue("@UserId", userId);
+                command.Parameters.AddWithValue("@Entry", mealEntry.Entry);
+                command.Parameters.AddWithValue("@Calories", mealEntry.Calories);
+                command.Parameters.AddWithValue("@TimeStamp", mealEntry.TimeStamp.ToString());
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
+                {
+                    throw new DbEntryNotFoundException(mealEntry, username, userId);
+                }
+            }
+        }
+
+        public static int GetUserId(string username)
+        {
+            using SqliteConnection connection = OpenConnection();
+            SqliteCommand getUserIdCommand = connection.CreateCommand();
+
+            getUserIdCommand.CommandText = "SELECT UserId FROM Users WHERE Username = @Username";
+            getUserIdCommand.Parameters.AddWithValue("@Username", username);
+            object userIdResult = getUserIdCommand.ExecuteScalar();
+
+            if (userIdResult != null)
+            {
+                return Convert.ToInt32(userIdResult);
+            }
+            return -1;
         }
 
         public static List<MealEntry> GetMealEntriesForUser(string username)
@@ -117,6 +157,8 @@ namespace JPlanner.Database
 
             return meals;
         }
+
+        private static bool IsValidUserId(int userId) => userId >= 0;
 
 #if DEBUG
         public static void PrintMealEntriesForUser(string username)

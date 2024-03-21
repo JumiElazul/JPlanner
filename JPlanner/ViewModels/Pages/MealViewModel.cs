@@ -31,8 +31,17 @@ namespace JPlanner.ViewModels.Pages
 
         private void InitializeViewModel()
         {
-            Meals.CollectionChanged += OnMealsCollectionChanged;
+            InitializeMealCollection();
             _isInitialized = true;
+        }
+
+        private void InitializeMealCollection()
+        {
+            List<MealEntry> mealEntries = SQLiteHandler.GetMealEntriesForUser("DefaultUser");
+            Meals = new ObservableCollection<MealEntry>(mealEntries);
+
+            Meals.CollectionChanged += OnMealsCollectionChanged;
+            CalculateTotalCalories();
         }
 
         [RelayCommand]
@@ -41,6 +50,7 @@ namespace JPlanner.ViewModels.Pages
             if (meal != null)
             {
                 Meals.Remove(meal);
+                SQLiteHandler.DeleteMealForUser("DefaultUser", meal);
             }
         }
 
@@ -55,7 +65,7 @@ namespace JPlanner.ViewModels.Pages
         }
 
         [RelayCommand]
-        private void SubmitMeal()
+        private void SubmitMeal(string user)
         {
             if (!String.IsNullOrWhiteSpace(MealInfo) && !String.IsNullOrWhiteSpace(CalorieInfo))
             {
@@ -65,7 +75,6 @@ namespace JPlanner.ViewModels.Pages
                 {
                     MealEntry newMeal = new MealEntry(MealInfo, calories, DateTime.Now);
                     Meals.Add(newMeal);
-                    SQLiteHandler.CreateUser("DefaultUser");
                     SQLiteHandler.CreateMealForUser("DefaultUser", newMeal);
 
                     ClearInputFields();

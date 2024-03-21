@@ -57,7 +57,7 @@
                                    Margin="0,0,20,0"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
-                        <ui:TextBlock Margin="0,5,0,5" Text="{Binding Food}" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <ui:TextBlock Margin="0,5,0,5" Text="{Binding Entry}" Grid.Column="1" HorizontalAlignment="Left"/>
                         <ui:TextBlock Margin="0,5,0,5" Text="{Binding Calories}" Grid.Column="2"/>
                         <ui:TextBlock Margin="0,5,0,5" Text="{Binding TimeStamp}" Grid.Column="3" HorizontalAlignment="Right"/>
                     </Grid>
