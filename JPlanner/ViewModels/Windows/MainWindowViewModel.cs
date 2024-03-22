@@ -12,11 +12,9 @@ namespace JPlanner.ViewModels.Windows
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string _applicationTitle = "JPlanner";
-
-        [ObservableProperty]
-        private ObservableCollection<object> _menuItems = new()
+        [ObservableProperty] private string _applicationTitle = "JPlanner";
+        [ObservableProperty] private bool _isUserLoggedIn = false;
+        [ObservableProperty] private ObservableCollection<object> _menuItems = new()
         {
             new NavigationViewItem()
             {
@@ -54,6 +52,11 @@ namespace JPlanner.ViewModels.Windows
         {
             new MenuItem { Header = "Home", Tag = "tray_home" }
         };
+
+        public MainWindowViewModel()
+        {
+
+        }
     }
 }
 

@@ -15,12 +15,12 @@ namespace JPlanner.Helpers
         {
             if (parameter is not String enumString)
             {
-                throw new ArgumentException("ExceptionEnumToBooleanConverterParameterMustBeAnEnumName");
+                throw new ArgumentException("Exception: EnumToBooleanConverter parameter must be an Enum name");
             }
 
             if (!Enum.IsDefined(typeof(ApplicationTheme), value))
             {
-                throw new ArgumentException("ExceptionEnumToBooleanConverterValueMustBeAnEnum");
+                throw new ArgumentException("Exception: EnumToBooleanConverter value Enum does not exist");
             }
 
             var enumValue = Enum.Parse(typeof(ApplicationTheme), enumString);
@@ -32,7 +32,7 @@ namespace JPlanner.Helpers
         {
             if (parameter is not String enumString)
             {
-                throw new ArgumentException("ExceptionEnumToBooleanConverterParameterMustBeAnEnumName");
+                throw new ArgumentException("Exception: EnumToBooleanConverter parameter must be an Enum name");
             }
 
             return Enum.Parse(typeof(ApplicationTheme), enumString);

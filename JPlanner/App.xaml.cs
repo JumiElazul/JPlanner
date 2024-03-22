@@ -110,7 +110,6 @@ namespace JPlanner
 #endif
 
             _host.Dispose();
-
         }
 
         /// <summary>
