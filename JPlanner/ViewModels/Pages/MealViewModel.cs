@@ -17,6 +17,7 @@ namespace JPlanner.ViewModels.Pages
     {
         private bool _isInitialized = false;
         [ObservableProperty] private ObservableCollection<MealEntry> _meals = new ObservableCollection<MealEntry>();
+        [ObservableProperty] private ObservableCollection<MealEntry> _recipes = new ObservableCollection<MealEntry>();
         [ObservableProperty] private int _calculatedCalories;
         [ObservableProperty] private string _mealInfo;
         [ObservableProperty] private string _calorieInfo;
@@ -38,9 +39,12 @@ namespace JPlanner.ViewModels.Pages
         private void InitializeMealCollection()
         {
             List<MealEntry> mealEntries = SQLiteHandler.GetMealEntriesForUser("DefaultUser");
+            List<MealEntry> recipeEntries = SQLiteHandler.GetRecipeEntriesForUser("DefaultUser");
             Meals = new ObservableCollection<MealEntry>(mealEntries);
+            Recipes = new ObservableCollection<MealEntry>(mealEntries);
 
             Meals.CollectionChanged += OnMealsCollectionChanged;
+            Recipes.CollectionChanged += OnRecipesCollectionChanged;
             CalculateTotalCalories();
         }
 
@@ -57,6 +61,11 @@ namespace JPlanner.ViewModels.Pages
         private void OnMealsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CalculateTotalCalories();
+        }
+
+        private void OnRecipesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
         }
 
         private void CalculateTotalCalories()

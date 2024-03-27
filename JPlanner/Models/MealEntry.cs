@@ -8,9 +8,11 @@ namespace JPlanner.Models
 {
     public class MealEntry
     {
-        public string Entry { get; private set; }
-        public int Calories { get; private set; }
-        public DateTime TimeStamp { get; private set; }
+        public string Entry { get; set; }
+        public int Calories { get; set; }
+        public DateTime TimeStamp { get; set; }
+
+        public MealEntry() { }
 
         public MealEntry(string entry, int calories, DateTime timeStamp)
         {

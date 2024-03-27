@@ -25,15 +25,18 @@ namespace JPlanner.Database
         public static void InitializeDatabase()
         {
             using SqliteConnection connection = OpenConnection();
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
+            SqliteCommand createUsers = connection.CreateCommand();
+            SqliteCommand createMeals = connection.CreateCommand();
+            SqliteCommand createRecipes = connection.CreateCommand();
+            SqliteCommand createRecipeEntries = connection.CreateCommand();
+
+            createUsers.CommandText =
                 @"CREATE TABLE IF NOT EXISTS Users (
                 UserId INTEGER PRIMARY KEY AUTOINCREMENT,
                 Username TEXT NOT NULL UNIQUE
                 );";
-            command.ExecuteNonQuery();
 
-            command.CommandText =
+            createMeals.CommandText =
                 @"CREATE TABLE IF NOT EXISTS Meals (
                 MealId INTEGER PRIMARY KEY AUTOINCREMENT,
                 UserId INTEGER NOT NULL,
@@ -42,7 +45,30 @@ namespace JPlanner.Database
                 TimeStamp TEXT NOT NULL,
                 FOREIGN KEY (UserId) REFERENCES Users(UserId)
                 );";
-            command.ExecuteNonQuery();
+
+            createRecipes.CommandText =
+                @"CREATE TABLE IF NOT EXISTS Recipes (
+                RecipeId INTEGER PRIMARY KEY AUTOINCREMENT,
+                UserId INTEGER NOT NULL,
+                RecipeName TEXT NOT NULL,
+                FOREIGN KEY (UserId) REFERENCES Users(UserId)
+                );";
+
+            createRecipeEntries.CommandText =
+                @"CREATE TABLE IF NOT EXISTS RecipeEntries (
+                RecipeEntryId INTEGER PRIMARY KEY AUTOINCREMENT,
+                RecipeId INTEGER NOT NULL,
+                Entry TEXT NOT NULL,
+                Calories INTEGER NOT NULL,
+                TimeStamp TEXT NOT NULL,
+                FOREIGN KEY (RecipeId) REFERENCES Recipes(RecipeId)
+                );";
+
+
+            createUsers.ExecuteNonQuery();
+            createMeals.ExecuteNonQuery();
+            createRecipes.ExecuteNonQuery();
+            createRecipeEntries.ExecuteNonQuery();
         }
 
         public static void CreateUser(string username)
@@ -156,6 +182,44 @@ namespace JPlanner.Database
             }
 
             return meals;
+        }
+
+        public static List<MealEntry> GetRecipeEntriesForUser(string username)
+        {
+            List<MealEntry> recipes = new List<MealEntry>();
+            using SqliteConnection connection = OpenConnection();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                @"
+                SELECT re.Entry, re.Calories, re.TimeStamp
+                FROM Users u
+                INNER JOIN Recipes r ON u.UserId = r.UserId
+                INNER JOIN RecipeEntries re ON r.RecipeId = re.RecipeId
+                WHERE u.Username = @Username;";
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    string entry = reader.GetString(0);
+                    int calories = reader.GetInt32(1);
+                    DateTime timeStamp = DateTime.Parse(reader.GetString(2));
+
+                    MealEntry mealEntry = new MealEntry
+                    {
+                        Entry = entry,
+                        Calories = calories,
+                        TimeStamp = timeStamp
+                    };
+
+                    recipes.Add(mealEntry);
+                }
+            }
+
+            return recipes;
         }
 
         private static bool IsValidUserId(int userId) => userId >= 0;
